@@ -1,6 +1,7 @@
 import java.util.Scanner;
+import java.time.LocalDate;;
 
-class  HostelMate {
+class HostelMate {
 
     static Scanner input = new Scanner(System.in);
     static final int MaxRows = 100;
@@ -10,6 +11,13 @@ class  HostelMate {
     static final int MaxStudents = 200;
     static int NoStudents = 0;
     static String[][] students = new String[MaxStudents][5];
+
+    // Allocate bed
+    static final int MaxAllocation = 300;
+    static int NoAllocations = 0;
+    static String[][] allocations = new String[MaxAllocation][5];
+
+    static String[][] occupancy = new String[MaxRows][20];
 
     public static void main(String[] args) {
         Login();
@@ -21,16 +29,22 @@ class  HostelMate {
             switch (choice) {
                 case 1:
                     ManageRooms();
+                    break;
                 case 2:
                     ManageStudents();
+                    break;
                 case 3:
                     AllocateBed();
+                    break;
                 case 4:
                     VacateBed();
+                    break;
                 case 5:
                     Transfers();
+                    break;
                 case 6:
                     ViewReports();
+                    break;
                 case 7:
                     break;
                 default:
@@ -175,6 +189,11 @@ class  HostelMate {
             rooms[NoRooms][4] = Double.toString(fee);
 
             rooms[NoRooms][5] = Integer.toString(Capacity);
+
+            // Initialize occupancy grid for this room (all the beds empty initialy)
+            for (int i = 0; i < Capacity; i++) {
+                occupancy[NoRooms][i] = "EMPTY";
+            }
 
             System.out.println("Room added. Available beds: " + rooms[NoRooms][5]);
 
@@ -480,7 +499,7 @@ class  HostelMate {
                     students[NoStudents - 1] = new String[5];
 
                 }
-                NoRooms--;
+                NoStudents--;
                 System.out.println("Deleted successfully.");
 
                 break;
@@ -552,9 +571,123 @@ class  HostelMate {
 
     public static void AllocateBed() {
 
+
+        System.out.println("\nAllocate Bed\n");
+
+        //input student id
+        System.out.print("\tStudent ID : ");
+        String studentId= input.next();
+        input.nextLine();
+
+        // checking student exist
+        int index = -1;
+        for (int i = 0; i < NoStudents; i++) {
+            if (students[i][0].equals(studentId)) {
+                index = i;
+                break;
+            }
+
+        }
+
+        if (index == -1) {
+            System.out.println("Student not Found.");
+            return;
+        }
+
+        // checking the student is ACTIVE
+        if (!students[index][4].equals("ACTIVE")) {
+            System.out.println("Student is not ACTIVE");
+            return;
+        }
+
+        //input room Id
+        System.out.print("\tRoom ID : ");
+        String roomId = input.next();
+        input.nextLine();
+
+        // checking if the room exists
+        int roomindex = -1;
+        for (int i = 0; i < NoRooms; i++) {
+            if (rooms[i][0].equals(roomId)) {
+                roomindex = i;
+                break;
+            }
+
+        }
+
+        if (roomindex == -1) {
+            System.out.println("Room not Found.Please enter a correct RoomId");
+            return;
+        }
+
+        // Checking the availablity of beds if its greather than zero
+        int availableBeds = Integer.parseInt(rooms[roomindex][5]);
+        if (availableBeds <= 0) {
+            System.out.println("No available beds in this room");
+            return;
+        }
+
+        // Checking if studen is already allocated
+        for (int i = 0; i < NoAllocations; i++) {
+            if (allocations[i][0].equals(studentId)) {
+                System.out.println("Student already has an active allocation");
+                return;
+            }
+        }
+
+        //Input due date 
+        System.out.print("\tDue Date(YYYY -MM-DD) : ");
+        String DueDate = input.next();
+        input.nextLine();
+
+        LocalDate checkDate = LocalDate.now(); // using current data as check in date
+        LocalDate due = LocalDate.parse(DueDate);
+
+        // Validating by checking if DueDate >= checkInDate
+        if (due.isBefore(checkDate)){
+            System.out.println("Invalid due date.Please enter again");
+            return;
+        }
+
+        //choosing the lowest available bedIndex within the room. 
+        int bedIndex = -1;
+        int roomCapacity = Integer.parseInt(rooms[roomindex][3]);
+
+        //iterating through the rooms and selecting the first emty amoung them 
+        for(int i=0; i<roomCapacity; i++){
+            if(occupancy[roomindex][i].equals("EMPTY")){
+                bedIndex= i;
+                break;
+            }
+        }
+
+        if (bedIndex == -1){
+            System.out.println("No empty bed found");
+            return;
+        }
+
+        //Recording the allocations 
+        allocations[NoAllocations][0] = studentId;
+        allocations[NoAllocations][1] = roomId;
+        allocations[NoAllocations][2] = Integer.toString(bedIndex);
+        allocations[NoAllocations][3] = checkDate.toString();
+        allocations[NoAllocations][4] = due.toString();
+        NoAllocations ++;
+
+        //updating Occupancy
+        occupancy[roomindex][bedIndex] = studentId;
+
+        //updating available beds
+        rooms[roomindex][5] = Integer.toString(Integer.parseInt(rooms[roomindex][5])-1);
+
+        //displaying the allocated room and the available beds 
+        System.out.println("\tAllocated: "+studentId+" -> Room " +roomId +"Bed "+bedIndex);
+        System.out.println("Available beds: ("+roomId+"): "+ rooms[roomindex][5]);
     }
 
     public static void VacateBed() {
+
+
 
     }
 
