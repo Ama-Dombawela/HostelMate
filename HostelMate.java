@@ -15,7 +15,7 @@ class HostelMate {
     // Allocate bed
     static final int MaxAllocation = 300;
     static int NoAllocations = 0;
-    static String[][] allocations = new String[MaxAllocation][5];
+    static String[][] allocations = new String[MaxAllocation][6];
 
     static String[][] occupancy = new String[MaxRows][20];
 
@@ -756,6 +756,104 @@ class HostelMate {
 
     public static void Transfers() {
 
+        System.out.println("\nTransfer\n");
+
+        // input student id
+        System.out.print("\tStudent ID : ");
+        String studentId = input.next();
+        input.nextLine();
+
+         // Check if this student is allocated to this room
+        int allocateIndex = -1; // will store the row number if found
+
+        for (int x = 0; x < NoAllocations; x++) {
+            if (allocations[x][0].equals(studentId)) {
+                allocateIndex = x;
+                break;
+            }
+        }
+
+        // if not found this ,cannot vacate and goes to the main menue
+        if (allocateIndex == -1) {
+            System.out.println("No ACTIVE allocations found for this student ");
+            return;
+        }
+
+        String oldRoomID = allocations[allocateIndex][1];
+        int oldRommIndex = -1;
+        int oldBedIndex = Integer.parseInt(allocations[allocateIndex][2]);
+
+        for(int i =0;i<NoRooms; i++){
+            if(rooms[i][0].equals(oldRoomID)){
+                oldRommIndex = i;
+                break;
+            }
+        }
+
+         //Prompting from which room to where
+        System.out.println("\tFrom Room : " +oldRoomID);
+
+        System.out.print("\tTo Room : ");
+        String newRoomId = input.next();
+        input.nextLine();
+
+        int newRoomIndex = -1;
+        for(int i = 0; i<NoRooms; i++){
+            if(rooms[i][0].equals(newRoomId)){
+                newRoomIndex = i;
+                break;
+            }
+        }
+
+        if (newRoomIndex == -1){
+            System.out.println("Target room does not exist.Please enter a valid room");
+            return;
+        }
+
+        //checking if the target room has available beds
+        int newAvaialble = Integer.parseInt(rooms[newRoomIndex][5]);
+        if(newAvaialble <=0){
+            System.out.println("No available beds in the target room ");
+            return;
+        }
+
+        //Finding the lowest available bed in the target room
+        int NewbedIndex = -1;
+        int NewCapacity = Integer.parseInt(rooms[newRoomIndex][3]);
+
+        // iterating through the rooms and selecting the first emty amoung them
+        for (int i = 0; i < NewCapacity; i++) {
+            if (occupancy[newRoomIndex][i].equals("EMPTY")) {
+                NewbedIndex = i;
+                break;
+            }
+        }
+        //checking if there are empty beds found
+        if(NewbedIndex == -1){
+            System.out.println("No empty bed found in the target room");
+            return;
+        }
+
+        //Performing the transfer
+        occupancy[oldRommIndex][oldBedIndex] = "EMPTY";
+        occupancy[newRoomIndex][NewbedIndex] = studentId;
+
+        //Update allocation
+        allocations[allocateIndex][1] = newRoomId;
+        allocations[allocateIndex][2] = Integer.toString(NewbedIndex);
+        //checkIn and due date remain constant
+        //log transfer date
+        allocations[allocateIndex][5] = LocalDate.now().toString();
+
+        //Updating the available beds
+        rooms[oldRommIndex][5] = Integer.toString(Integer.parseInt(rooms[oldRommIndex][5])+1);
+        rooms[newRoomIndex][5] = Integer.toString(Integer.parseInt(rooms[newRoomIndex][5])-1);
+        
+        //Displaying the transfer data
+        System.out.println("\n\tTransferred to "+newRoomId+"Bed "+NewbedIndex);
+        System.out.println("\n\tAvail (" + oldRoomID + "): " + rooms[oldRommIndex][5] +" | Avail (" + newRoomId + "): " + rooms[newRoomIndex][5]);
+        System.out.println("\t Transfer Datec: " + allocations[allocateIndex][5]); //optional print statement to display the transfer date 
+
     }
 
     public static void ViewReports() {
@@ -819,7 +917,7 @@ class HostelMate {
         return false;
     }
 
-    // Overduedays calculation method
+    // Overduedays calculation method(used in Vacate Bed)
     public static int OverdueDaysCalculate(String StrDueDate) {
 
         String[] parts = StrDueDate.split("-");
