@@ -15,7 +15,7 @@ class HostelMate {
     // Allocate bed
     static final int MaxAllocation = 300;
     static int NoAllocations = 0;
-    static String[][] allocations = new String[MaxAllocation][6];
+    static String[][] allocations = new String[MaxAllocation][5];
 
     static String[][] occupancy = new String[MaxRows][20];
 
@@ -843,7 +843,7 @@ class HostelMate {
         allocations[allocateIndex][2] = Integer.toString(NewbedIndex);
         // checkIn and due date remain constant
         // log transfer date
-        allocations[allocateIndex][5] = LocalDate.now().toString();
+        String transferDate = LocalDate.now().toString();
 
         // Updating the available beds
         rooms[oldRommIndex][5] = Integer.toString(Integer.parseInt(rooms[oldRommIndex][5]) + 1);
@@ -853,7 +853,7 @@ class HostelMate {
         System.out.println("\n\tTransferred to " + newRoomId + "Bed " + NewbedIndex);
         System.out.println("\n\tAvail (" + oldRoomID + "): " + rooms[oldRommIndex][5] + " | Avail (" + newRoomId + "): "
                 + rooms[newRoomIndex][5]);
-        System.out.println("\t Transfer Date: " + allocations[allocateIndex][5]); // optional print statement to display
+        System.out.println("\t Transfer Date: " + transferDate); // optional print statement to display
                                                                                   // the transfer date
 
     }
