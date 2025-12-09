@@ -589,13 +589,13 @@ class HostelMate {
         }
 
         if (index == -1) {
-            System.out.println("Student not Found.");
+            System.out.println("\tStudent not Found.");
             return;
         }
 
         // checking the student is ACTIVE
         if (!students[index][4].equals("ACTIVE")) {
-            System.out.println("Student is not ACTIVE");
+            System.out.println("\tStudent is not ACTIVE");
             return;
         }
 
@@ -615,21 +615,21 @@ class HostelMate {
         }
 
         if (roomindex == -1) {
-            System.out.println("Room not Found.");
+            System.out.println("\tRoom not Found.");
             return;
         }
 
         // Checking the availablity of beds if its greather than zero
         int availableBeds = Integer.parseInt(rooms[roomindex][5]);
         if (availableBeds <= 0) {
-            System.out.println("No available beds in this room");
+            System.out.println("\tNo available beds in this room");
             return;
         }
 
         // Checking if studen is already allocated
         for (int i = 0; i < NoAllocations; i++) {
             if (allocations[i][0].equals(studentId)) {
-                System.out.println("Student already has an active allocation");
+                System.out.println("\tStudent already has an active allocation");
                 return;
             }
         }
@@ -644,7 +644,7 @@ class HostelMate {
 
         // Validating by checking if DueDate >= checkInDate
         if (due.isBefore(checkDate)) {
-            System.out.println("Invalid due date.Please enter again");
+            System.out.println("\tInvalid due date.Please enter again");
             return;
         }
 
@@ -661,7 +661,7 @@ class HostelMate {
         }
 
         if (bedIndex == -1) {
-            System.out.println("No empty bed found");
+            System.out.println("\tNo empty bed found");
             return;
         }
 
@@ -708,7 +708,7 @@ class HostelMate {
         }
 
         if (roomindex == -1) {
-            System.out.println("Room not Found.Please enter a correct RoomId");
+            System.out.println("\tRoom not Found.Please enter a correct RoomId");
             return;
         }
         // Check if this student is allocated to this room
@@ -723,7 +723,7 @@ class HostelMate {
 
         // if not found this ,cannot vacate and goes to the main menue
         if (allocateIndex == -1) {
-            System.out.println("No ACTIVE allocations found for this student in this room");
+            System.out.println("\tNo ACTIVE allocations found for this student in this room");
             return;
         }
 
@@ -775,7 +775,7 @@ class HostelMate {
 
         // if not found this ,cannot vacate and goes to the main menue
         if (allocateIndex == -1) {
-            System.out.println("No ACTIVE allocations found for this student ");
+            System.out.println("\tNo ACTIVE allocations found for this student ");
             return;
         }
 
@@ -806,14 +806,14 @@ class HostelMate {
         }
 
         if (newRoomIndex == -1){
-            System.out.println("Target room does not exist.Please enter a valid room");
+            System.out.println("\tTarget room does not exist.Please enter a valid room");
             return;
         }
 
         //checking if the target room has available beds
         int newAvaialble = Integer.parseInt(rooms[newRoomIndex][5]);
         if(newAvaialble <=0){
-            System.out.println("No available beds in the target room ");
+            System.out.println("\tNo available beds in the target room ");
             return;
         }
 
@@ -830,7 +830,7 @@ class HostelMate {
         }
         //checking if there are empty beds found
         if(NewbedIndex == -1){
-            System.out.println("No empty bed found in the target room");
+            System.out.println("\tNo empty bed found in the target room");
             return;
         }
 
