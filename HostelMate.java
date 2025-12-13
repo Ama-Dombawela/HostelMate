@@ -1,5 +1,7 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.time.LocalDate;;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 class HostelMate {
 
@@ -60,66 +62,78 @@ class HostelMate {
         String Password;
 
         System.out.println("=== HostelMate Login ===");
+
         while (true) {
+            while (true) {
 
-            System.out.print("Username: ");
-            Username = input.nextLine();
-            boolean UserNameCheck = true;
+                System.out.print("Username: ");
+                Username = input.nextLine();
+                boolean UserNameCheck = true;
 
-            if (Username.isEmpty() || Username.length() < 3) {
-                UserNameCheck = false;
-                System.out.println("Invalid Username.Please enter the correct Username.");
-            } else {
-                for (int i = 0; i < Username.length(); i++) {
-                    char n = Username.charAt(i);
-                    if (!Character.isLetter(n) && n != ' ') {
-                        System.out.println("Invalid Username.Numbers cannot be included");
-                        UserNameCheck = false;
-                        break;
+                if (Username.isEmpty() || Username.length() < 3) {
+                    UserNameCheck = false;
+                    System.out.println("Invalid Username.Please enter the correct Username.");
+                } else {
+                    for (int i = 0; i < Username.length(); i++) {
+                        char n = Username.charAt(i);
+                        if (!Character.isLetter(n) && n != ' ') {
+                            System.out.println("Invalid Username.Numbers cannot be included");
+                            UserNameCheck = false;
+                            break;
+                        }
                     }
                 }
+                if (UserNameCheck)
+                    break;
             }
-            if (UserNameCheck)
-                break;
-        }
 
-        while (true) {
-            System.out.print("Password: ");
-            Password = input.nextLine();
+            // Password validation
+            while (true) {
+                System.out.print("Password: ");
+                Password = input.nextLine();
 
-            boolean passwordCheck = true;
-            boolean hasLetter = false;
-            boolean hasNumber = false;
+                boolean passwordCheck = true;
+                boolean hasLetter = false;
+                boolean hasNumber = false;
 
-            if (Password.isEmpty() || Password.length() < 4) {
-                passwordCheck = false;
-                System.out.println("Please enter the correct password");
-            } else {
-                for (int i = 0; i < Password.length(); i++) {
-                    char a = Password.charAt(i);
-                    if (Character.isLetter(a))
-                        hasLetter = true;
-                    if (Character.isDigit(a))
-                        hasNumber = true;
-
-                    if (hasLetter && hasNumber)
-                        break;
-                }
-                if (!hasLetter || !hasNumber) {
+                if (Password.isEmpty() || Password.length() < 4) {
                     passwordCheck = false;
-                    System.out.println("Invalid password.Please enter the correct password");
+                    System.out.println("Please enter the correct password");
+                } else {
+                    for (int i = 0; i < Password.length(); i++) {
+                        char a = Password.charAt(i);
+                        if (Character.isLetter(a))
+                            hasLetter = true;
+                        if (Character.isDigit(a))
+                            hasNumber = true;
 
+                        if (hasLetter && hasNumber)
+                            break;
+                    }
+                    if (!hasLetter || !hasNumber) {
+                        passwordCheck = false;
+                        System.out.println("Invalid password.Please enter the correct password");
+
+                    }
                 }
-            }
 
-            if (passwordCheck)
+                if (passwordCheck)
+                    break;
+            }
+            // Authentication
+            if (Username.equals("warden") && Password.equals("warden123")) {
+                System.out.println("Login successful. Welcome," + Username + "!");
                 break;
+            } else {
+                System.out.println("Invalid credentials.Try again!\n");
+            }
         }
 
-        System.out.println("Login successful. Welcome," + Username);
     }
 
     public static int HomePage() {
+
+        clearConsole();
 
         System.out.println("""
 
@@ -134,9 +148,20 @@ class HostelMate {
                 7) Exit
                          """);
 
-        System.out.print("Choose: ");
-        int choice = input.nextInt();
+        int choice = -1;
+        while (true) {
+            System.out.print("Choose: ");
 
+            try {
+                choice = Integer.parseInt(input.nextLine());
+                if (choice >= 1 && choice <= 7)
+                    break;
+                else
+                    System.out.println("Invalid choice.Please enter a choice between (1-7)");
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input.Enter a number ");
+            }
+        }
         return choice;
     }
 
@@ -172,22 +197,55 @@ class HostelMate {
 
             rooms[NoRooms][0] = RoomId;
 
+            int Floor;
             System.out.print("Floor : ");
-            int Floor = Integer.parseInt(input.nextLine());
+            try {
+                Floor = Integer.parseInt(input.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid Floor number!");
+                return;
+            }
             rooms[NoRooms][1] = Integer.toString(Floor);
 
+            int RoomNo = 0;
             System.out.print("Room No : ");
-            int RoomNo = Integer.parseInt(input.nextLine());
+            try {
+                RoomNo = Integer.parseInt(input.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid Room number!");
+                return;
+            }
             rooms[NoRooms][2] = Integer.toString(RoomNo);
 
+            int Capacity;
             System.out.print("Capacity : ");
-            int Capacity = Integer.parseInt(input.nextLine());
+
+            try {
+                Capacity = Integer.parseInt(input.nextLine());
+                if (Capacity <= 0) {
+                    System.out.println("Invalid Capacity ! Must be greater than zero");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid Capacity input!");
+                return;
+            }
             rooms[NoRooms][3] = Integer.toString(Capacity);
 
+            double fee;
             System.out.print("Fee/Day(LKR) : ");
-            double fee = Double.parseDouble(input.nextLine());
-            rooms[NoRooms][4] = Double.toString(fee);
+            try {
+                fee = Double.parseDouble(input.nextLine());
+                if (fee < 0) {
+                    System.out.println("Invalid fee ! must be greater thatn or equals zero");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid Fee input!");
+                return;
+            }
 
+            rooms[NoRooms][4] = String.format("%.2f", fee);
             rooms[NoRooms][5] = Integer.toString(Capacity);
 
             // Initialize occupancy grid for this room (all the beds empty initialy)
@@ -270,8 +328,16 @@ class HostelMate {
                 return;
             }
 
-            int FullCapacity = Integer.parseInt(rooms[index][3]);
-            int available = Integer.parseInt(rooms[index][5]);
+            int FullCapacity = 0, available = 0;
+
+            try {
+                FullCapacity = Integer.parseInt(rooms[index][3]);
+                available = Integer.parseInt(rooms[index][5]);
+            } catch (NumberFormatException e) {
+                System.out.println("Room Data corrupted");
+                return;
+            }
+
             if (available != FullCapacity) {
                 System.out.println("Cannot Delete! There are ACTIVE ALLOCATIONS for this room");
                 return;
@@ -298,12 +364,17 @@ class HostelMate {
                     index = i;
                     System.out.println("Found\n");
 
-                    System.out.println("ID Floor No Cap Avail Fee/Day\n");
+                    System.out.println("ID\tFloor\tNo\tCap\tAvail\tFee/Day\n");
                     System.out.println("--------------------------------------\n");
 
-                    for (int x = 0; x < rooms[index].length; x++) {
-                        System.out.print(rooms[index][x] + "");
-                    }
+                    System.out.printf("%s\t%s\t%s\t%s\t%s\t%s\n",
+                            rooms[index][0],
+                            rooms[index][1],
+                            rooms[index][2],
+                            rooms[index][3],
+                            rooms[index][5],
+                            rooms[index][4]);
+
                     System.out.println();
                     break;
                 }
@@ -316,13 +387,22 @@ class HostelMate {
             }
 
         } else if (manageChoice == 5) {
+
+            sortRoomsByAvailBed();// callig the sorting method made to sort by the available beds(descending
+                                  // order)
+
             System.out.println("\nAll Rooms\n");
             System.out.println("ID\tFloor\t No\t Cap\t Avail\t Fee/Day\n");
             System.out.println("---------------------------------------------\n");
 
             for (int i = 0; i < NoRooms; i++) {
-                System.out.print(rooms[i][0] + "\t" + rooms[i][1] + "\t" + rooms[i][2] + "\t" + rooms[i][3] + "\t"
-                        + rooms[i][4] + "\t" + rooms[i][5] + "\n");
+                System.out.printf("%s\t%s\t%s\t%s\t%s\t%s\n",
+                        rooms[i][0],
+                        rooms[i][1],
+                        rooms[i][2],
+                        rooms[i][3],
+                        rooms[i][5],
+                        rooms[i][4]);
             }
 
         } else {
@@ -340,231 +420,240 @@ class HostelMate {
         String emailAddress;
         String status = "ACTIVE";
 
-        System.out.println("""
-                === ManageStudents ===
+        try {
+            System.out.println("""
+                    === ManageStudents ===
 
-                1) Add Student
-                2) Update Student
-                3) Delete Student
-                4) Search Student
-                5) View All Student
-                """);
+                    1) Add Student
+                    2) Update Student
+                    3) Delete Student
+                    4) Search Student
+                    5) View All Student
+                    """);
 
-        System.out.print("Enter your choice(1-5): ");
-        int manageChoice = input.nextInt();
-        input.nextLine();
+            System.out.print("Enter your choice(1-5): ");
+            int manageChoice = input.nextInt();
+            input.nextLine();
 
-        switch (manageChoice) {
-            case 1:
-                System.out.println("\nAdd Student\n");
+            switch (manageChoice) {
+                case 1:
+                    System.out.println("\nAdd Student\n");
 
-                System.out.print("Student ID : ");
-                studentId = input.next();
-                input.nextLine();
+                    System.out.print("Student ID : ");
+                    studentId = input.next();
+                    input.nextLine();
 
-                // Validating studentId
-                // Each row represent a student record
-                // Condition checks until the NoStudents rather than the MaxStudents
-                for (int i = 0; i < NoStudents; i++) {
-                    // In inner arrays, 0th element represents the studentId
-                    if (students[i][0].equals(studentId)) {
-                        System.out.println("Student Id already exists");
-                        return;
-                    }
-                }
-
-                // Getting user input and validating
-
-                System.out.print("Name       : ");
-                String studentName = input.nextLine();
-
-                System.out.print("Contact    : ");
-                contactNo = input.next();
-                input.nextLine();
-                // If the number is invalid then redirect to the main menu
-                if (invalidContact(contactNo)) {
-                    System.out.println();
-                    return;
-                }
-
-                System.out.print("Email      : ");
-                emailAddress = input.nextLine();
-                if (invalidEmail(emailAddress)) {
-                    return;
-
-                }
-
-                System.out.println("Status     : " + status);
-
-                // Adding information to the array
-                students[NoStudents][0] = studentId;
-                students[NoStudents][1] = studentName;
-                students[NoStudents][2] = contactNo;
-                students[NoStudents][3] = emailAddress;
-                students[NoStudents][4] = status;
-
-                System.out.println("Student Added.");
-                NoStudents++;
-
-                System.out.println();
-                break;
-
-            case 2:
-
-                System.out.println("\nUpdate Student\n");
-
-                System.out.print("Student ID to update      : ");
-                studentId = input.nextLine();
-
-                index = -1;
-                for (int i = 0; i < NoStudents; i++) {
-                    if (students[i][0].equals(studentId)) {
-                        index = i;
-                        break;
+                    // Validating studentId
+                    // Each row represent a student record
+                    // Condition checks until the NoStudents rather than the MaxStudents
+                    for (int i = 0; i < NoStudents; i++) {
+                        // In inner arrays, 0th element represents the studentId
+                        if (students[i][0].equals(studentId)) {
+                            System.out.println("Student Id already exists");
+                            return;
+                        }
                     }
 
-                }
+                    // Getting user input and validating
 
-                if (index == -1) {
-                    System.out.println("Student not Found.");
-                    return;
-                }
+                    System.out.print("Name       : ");
+                    String studentName = input.nextLine();
 
-                System.out.print("New Contact (or - to skip): ");
-                contactNo = input.next();
-                input.nextLine();
-                if (!contactNo.equals("-")) {
+                    System.out.print("Contact    : ");
+                    contactNo = input.next();
+                    input.nextLine();
                     // If the number is invalid then redirect to the main menu
                     if (invalidContact(contactNo)) {
                         System.out.println();
                         return;
-                    } else {
-                        students[index][2] = contactNo;
                     }
-                }
 
-                System.out.print("New Email (or - to skip)  : ");
-                emailAddress = input.nextLine();
-                if (!emailAddress.equals("-")) {
+                    System.out.print("Email      : ");
+                    emailAddress = input.nextLine();
                     if (invalidEmail(emailAddress)) {
                         return;
-                    }
-                } else {
-                    students[index][3] = emailAddress;
-                }
 
-                System.out.println("Updated: " +
-                        students[index][0] + " | " +
-                        students[index][1] + " | " +
-                        students[index][2] + " | " +
-                        students[index][3] + " | " +
-                        students[index][4] + " | ");
-
-                break;
-
-            case 3:
-
-                System.out.println("\nDelete Student\n");
-
-                System.out.print("Student ID: ");
-                studentId = input.nextLine();
-
-                index = -1;
-                for (int i = 0; i < NoStudents; i++) {
-                    if (students[i][0].equals(studentId)) {
-                        index = i;
-                        break;
                     }
 
-                }
+                    System.out.println("Status     : " + status);
 
-                if (index == -1) {
-                    System.out.println("Student not Found.");
-                    return;
-                }
+                    // Adding information to the array
+                    students[NoStudents][0] = studentId;
+                    students[NoStudents][1] = studentName;
+                    students[NoStudents][2] = contactNo;
+                    students[NoStudents][3] = emailAddress;
+                    students[NoStudents][4] = status;
 
-                // If the student is active then cannot remove him
-                if (students[index][4].equals("ACTIVE")) {
-                    System.out.println("Cannot Delete! Student have ACTIVE ALLOCATIONS");
-                    return;
-                } else {
-                    // Shifting records to the left. Current I is equal to I+1(next student). This
-                    // goes until no of NoStudent - 1
-                    // length - 1 because there's nothing to replace last one with
-                    for (int i = index; i < NoStudents - 1; i++) {
-                        students[i] = students[i + 1];
+                    System.out.println("Student Added.");
+                    NoStudents++;
+
+                    System.out.println();
+                    break;
+
+                case 2:
+
+                    System.out.println("\nUpdate Student\n");
+
+                    System.out.print("Student ID to update      : ");
+                    studentId = input.nextLine();
+
+                    index = -1;
+                    for (int i = 0; i < NoStudents; i++) {
+                        if (students[i][0].equals(studentId)) {
+                            index = i;
+                            break;
+                        }
+
                     }
 
-                    // Last room is now empty and a new array
-                    students[NoStudents - 1] = new String[5];
+                    if (index == -1) {
+                        System.out.println("Student not Found.");
+                        return;
+                    }
 
-                }
-                NoStudents--;
-                System.out.println("Deleted successfully.");
+                    System.out.print("New Contact (or - to skip): ");
+                    contactNo = input.next();
+                    input.nextLine();
+                    if (!contactNo.equals("-")) {
+                        // If the number is invalid then redirect to the main menu
+                        if (invalidContact(contactNo)) {
+                            System.out.println();
+                            return;
+                        } else {
+                            students[index][2] = contactNo;
+                        }
+                    }
 
-                break;
+                    System.out.print("New Email (or - to skip)  : ");
+                    emailAddress = input.nextLine();
+                    if (!emailAddress.equals("-")) {
+                        if (invalidEmail(emailAddress)) {
+                            return;
+                        }
+                        students[index][3] = emailAddress;
 
-            case 4:
+                    }
 
-                System.out.println("\nSearch Student\n");
+                    System.out.println("Updated: " +
+                            students[index][0] + " | " +
+                            students[index][1] + " | " +
+                            students[index][2] + " | " +
+                            students[index][3] + " | " +
+                            students[index][4] + " | ");
 
-                System.out.print("Student ID: ");
-                studentId = input.nextLine();
+                    break;
 
-                index = -1;
-                for (int i = 0; i < NoStudents; i++) {
-                    if (students[i][0].equals(studentId)) {
-                        index = i;
-                        System.out.println("Found\n");
+                case 3:
 
-                        System.out.printf("%-10s %-10s %-10s %-20s %-10s\n", "ID", "Name", "Contact", "Email",
-                                "Status");
-                        System.out.println("----------------------------------------------------------------\n");
+                    System.out.println("\nDelete Student\n");
 
-                        // 0 - 5, indexes of the inner array elements
+                    System.out.print("Student ID: ");
+                    studentId = input.nextLine();
+
+                    index = -1;
+                    for (int i = 0; i < NoStudents; i++) {
+                        if (students[i][0].equals(studentId)) {
+                            index = i;
+                            break;
+                        }
+
+                    }
+
+                    if (index == -1) {
+                        System.out.println("Student not Found.");
+                        return;
+                    }
+
+                    // If the student is active then cannot remove him
+                    if (students[index][4].equals("ACTIVE")) {
+                        System.out
+                                .println("Cannot Delete! Student have ACTIVE ALLOCATIONS.Marking as INACTIVE instead.");
+                        students[index][4] = "INACTIVE";
+                        return;
+                    } else {
+                        // Shifting records to the left. Current I is equal to I+1(next student). This
+                        // goes until no of NoStudent - 1
+                        // length - 1 because there's nothing to replace last one with
+                        for (int i = index; i < NoStudents - 1; i++) {
+                            students[i] = students[i + 1];
+                        }
+
+                        // Last room is now empty and a new array
+                        students[NoStudents - 1] = new String[5];
+
+                    }
+                    NoStudents--;
+                    System.out.println("Deleted successfully.");
+
+                    break;
+
+                case 4:
+
+                    System.out.println("\nSearch Student\n");
+
+                    System.out.print("Student ID: ");
+                    studentId = input.nextLine();
+
+                    index = -1;
+                    for (int i = 0; i < NoStudents; i++) {
+                        if (students[i][0].equals(studentId)) {
+                            index = i;
+                            System.out.println("Found\n");
+
+                            System.out.printf("%-10s %-10s %-10s %-20s %-10s\n", "ID", "Name", "Contact", "Email",
+                                    "Status");
+                            System.out.println("----------------------------------------------------------------\n");
+
+                            // 0 - 5, indexes of the inner array elements
+                            System.out.printf(
+                                    "%-10s %-10s %-10s %-20s %-10s\n",
+                                    students[index][0],
+                                    students[index][1],
+                                    students[index][2],
+                                    students[index][3],
+                                    students[index][4]);
+
+                            System.out.println();
+                            break;
+                        }
+
+                    }
+
+                    if (index == -1) {
+                        System.out.println("Student not Found.");
+                        return;
+                    }
+
+                    break;
+
+                case 5:
+
+                    System.out.println("All Students");
+                    System.out.printf("%-10s %-10s %-10s %-20s %-10s\n", "ID", "Name", "Contact", "Email", "Status");
+                    System.out.println("----------------------------------------------------------------\n");
+
+                    for (int i = 0; i < NoStudents; i++) {
                         System.out.printf(
                                 "%-10s %-10s %-10s %-20s %-10s\n",
-                                students[index][0],
-                                students[index][1],
-                                students[index][2],
-                                students[index][3],
-                                students[index][4]);
-
-                        System.out.println();
-                        break;
+                                students[i][0],
+                                students[i][1],
+                                students[i][2],
+                                students[i][3],
+                                students[i][4]);
                     }
 
-                }
+                    System.out.println();
+                    break;
 
-                if (index == -1) {
-                    System.out.println("Student not Found.");
-                    return;
-                }
+                default:
+                    System.out.println("Invalid input. Please enter a choice(1-5)");
 
-                break;
-
-            case 5:
-
-                System.out.println("All Students");
-                System.out.printf("%-10s %-10s %-10s %-20s %-10s\n", "ID", "Name", "Contact", "Email", "Status");
-                System.out.println("----------------------------------------------------------------\n");
-
-                for (int i = 0; i < NoStudents; i++) {
-                    System.out.printf(
-                            "%-10s %-10s %-10s %-20s %-10s\n",
-                            students[i][0],
-                            students[i][1],
-                            students[i][2],
-                            students[i][3],
-                            students[i][4]);
-                }
-
-                System.out.println();
-                break;
-
-            default:
-                System.out.println("Invalid input. Please enter a choice(1-5)");
-
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input type.Please enter the correct value.");
+            input.nextLine();// clear invalid input
+        } catch (Exception e) {
+            System.out.println("Error detected : " + e.getMessage());
         }
 
     }
@@ -635,12 +724,19 @@ class HostelMate {
         }
 
         // Input due date
-        System.out.print("\n\tDue Date(YYYY -MM-DD) : ");
+        System.out.print("\n\tDue Date(YYYY-MM-DD) : ");
         String DueDate = input.next();
         input.nextLine();
 
         LocalDate checkDate = LocalDate.now(); // using current data as check in date
-        LocalDate due = LocalDate.parse(DueDate);
+        LocalDate due;
+
+        try {
+            due = LocalDate.parse(DueDate);
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid date format.Use(YYYY-MM-DD)");
+            return;
+        }
 
         // Validating by checking if DueDate >= checkInDate
         if (due.isBefore(checkDate)) {
@@ -731,12 +827,27 @@ class HostelMate {
         int Overduedays = OverdueDaysCalculate(StrDueDate);// calling the Overduedays calculation method
 
         // Calculating the fine
-        double OneDayFee = Double.parseDouble(rooms[roomindex][4]);
+        double OneDayFee;
+        try {
+            OneDayFee = Double.parseDouble(rooms[roomindex][4]);
+        } catch (NumberFormatException e) {
+            System.out.println("Data error : invalid numeric value");
+            return;
+        }
+
         double fine = Overduedays * OneDayFee;
 
         // Remove allocation row, set occupancy cell to "EMPTY", increase availableBeds
         // by 1.
-        int bedIndex = Integer.parseInt(allocations[allocateIndex][2]);
+        int bedIndex;
+
+        try {
+            bedIndex = Integer.parseInt(allocations[allocateIndex][2]);
+        } catch (NumberFormatException e) {
+            System.out.println("Data error : invalid numeric value");
+            return;
+        }
+
         occupancy[roomindex][bedIndex] = "EMPTY";
 
         for (int i = allocateIndex; i < NoAllocations - 1; i++) {
@@ -781,8 +892,14 @@ class HostelMate {
 
         String oldRoomID = allocations[allocateIndex][1];
         int oldRommIndex = -1;
-        int oldBedIndex = Integer.parseInt(allocations[allocateIndex][2]);
+        int oldBedIndex;
 
+        try {
+            oldBedIndex = Integer.parseInt(allocations[allocateIndex][2]);
+        } catch (NumberFormatException e) {
+            System.out.println("Data error: invalid numeric value.");
+            return;
+        }
         for (int i = 0; i < NoRooms; i++) {
             if (rooms[i][0].equals(oldRoomID)) {
                 oldRommIndex = i;
@@ -811,7 +928,17 @@ class HostelMate {
         }
 
         // checking if the target room has available beds
-        int newAvaialble = Integer.parseInt(rooms[newRoomIndex][5]);
+        int newAvaialble;
+        int NewCapacity;
+
+        try {
+            newAvaialble = Integer.parseInt(rooms[newRoomIndex][5]);
+            NewCapacity = Integer.parseInt(rooms[newRoomIndex][3]);
+
+        } catch (NumberFormatException e) {
+            System.out.println("Data error: invalid numeric value.");
+            return;
+        }
         if (newAvaialble <= 0) {
             System.out.println("\tNo available beds in the target room ");
             return;
@@ -819,7 +946,6 @@ class HostelMate {
 
         // Finding the lowest available bed in the target room
         int NewbedIndex = -1;
-        int NewCapacity = Integer.parseInt(rooms[newRoomIndex][3]);
 
         // iterating through the rooms and selecting the first emty amoung them
         for (int i = 0; i < NewCapacity; i++) {
@@ -854,7 +980,7 @@ class HostelMate {
         System.out.println("\n\tAvail (" + oldRoomID + "): " + rooms[oldRommIndex][5] + " | Avail (" + newRoomId + "): "
                 + rooms[newRoomIndex][5]);
         System.out.println("\t Transfer Date: " + transferDate); // optional print statement to display
-                                                                                  // the transfer date
+                                                                 // the transfer date
 
     }
 
@@ -933,7 +1059,7 @@ class HostelMate {
                     count++;
                 }
             }
-            System.out.println("\n\t"+ROOMID + "\t" + count + "\t" + studentList);
+            System.out.println("\n\t" + ROOMID + "\t" + count + "\t" + studentList);
         }
 
         // Overdue Dues
@@ -975,16 +1101,31 @@ class HostelMate {
             int capacity = Integer.parseInt(rooms[i][3]);
             double OneDayFee = Double.parseDouble(rooms[i][4]);
 
-             // iterate through all the beds in the room
-            for (int x=0; x<capacity; x++){
-                if(!occupancy[i][x].equals("EMPTY")){
-                    totalRevenue +=OneDayFee;
+            // iterate through all the beds in the room
+            for (int x = 0; x < capacity; x++) {
+                if (!occupancy[i][x].equals("EMPTY")) {
+                    totalRevenue += OneDayFee;
                 }
             }
 
         }
-        System.out.println("\n\t$ feePerDay for currently occupied beds = "+totalRevenue+" LKR");
+        System.out.printf("\n\t$ feePerDay for currently occupied beds = " + totalRevenue + "%.2f LKR");
 
+    }
+
+    // Sorting method for sort by availbaleBeds
+    public static void sortRoomsByAvailBed() {
+        for (int i = 0; i < NoRooms - 1; i++) {
+            for (int x = 0; x < NoRooms - i - 1; x++) {
+                int bedone = Integer.parseInt(rooms[x][5]);
+                int bedtwo = Integer.parseInt(rooms[x + 1][5]);
+                if (bedone < bedtwo) {
+                    String[] temp = rooms[x];
+                    rooms[x] = rooms[x + 1];
+                    rooms[x + 1] = temp;
+                }
+            }
+        }
     }
 
     // Supporting methods
@@ -1067,4 +1208,21 @@ class HostelMate {
         return Overduedays;
 
     }
+
+    // Clear the console screen method
+    public static void clearConsole() {
+        final String os = System.getProperty("os.name");
+        try {
+            if (os.contains("Linux"))
+                System.out.print("\033\143");
+            else if (os.contains("Windows"))
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+
+    }
+
 }
