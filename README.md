@@ -26,17 +26,19 @@ The system emphasizes structured data handling, rigorous validation, and robust 
 - **Interface:** Console-based CLI
 - **Data Storage:** 2D `String` arrays exclusively
 - Manual searching, sorting, and data validation
-- String–number conversions using Java parsing methods (`Integer.parseInt`, `Double.parseDouble`, `Integer.toString`, `Double.toString`)
+- String–number conversions using Java parsing methods 
 
 ---
 
-## ▶️ How to Run
-1. Clone the repository:
-git clone https://github.com/Ama-Dombawela/HostelMate.git
-cd HostelMate
+## ▶️ Setup & Run
 
-2.Comple and run the program
-javac HostelMate.java
-java HostelMate
+Clone the repository:
+        git clone https://github.com/Ama-Dombawela/HostelMate.git
+
+Navigate to the folder and run
+
+        javac HostelMate.java
+        java HostelMate
+
 
 
