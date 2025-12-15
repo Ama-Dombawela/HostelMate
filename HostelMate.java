@@ -1464,7 +1464,7 @@ class HostelMate {
 
     }
 
-    // Clear the console screen method
+    // Clear the console screen method(given)
     public static void clearConsole() {
         try {
             Thread.sleep(3000);
