@@ -71,7 +71,7 @@ class HostelMate {
 
                 default:
                     // If non of that displaying a error
-                    System.out.println("Invalid choice Please enter a chice between (1-7).");
+                    System.out.println("Invalid choice Please enter a choice between (1-7).");
 
             }
         } while (choice != 7);
@@ -213,7 +213,7 @@ class HostelMate {
     public static void ManageRooms() {
 
         while (true) {
-            // Displaying manege room menu
+            // Displaying manage room menu
             System.out.println("""
 
                     === ManageRooms ===
@@ -252,6 +252,15 @@ class HostelMate {
                 System.out.print("\tRoom ID : ");
                 String RoomId = input.nextLine();
 
+                if (RoomId.isEmpty()) {
+                    System.out.println("\tRoom Id cannot be empty.Please enter a valid Room Number.");
+                    continue;
+                }
+
+                if (!RoomId.matches("R\\d+")) {
+                    System.out.println("\tInvalid Room Number.Room ID must start with R (eg:R101).");
+                    continue;
+                }
                 // Checking wheather the room already exsists
                 boolean dup = false;
                 for (int i = 0; i < NoRooms; i++) {
@@ -260,7 +269,8 @@ class HostelMate {
                         dup = true;
                         break;
                     }
-                }if (dup)
+                }
+                if (dup)
                     continue;
 
                 // storing the room ID
@@ -357,7 +367,7 @@ class HostelMate {
                 }
                 // If room not found
                 if (index == -1) {
-                    System.out.println("\tRoom not Found.Please enter a correct RoomId");
+                    System.out.println("\tRoom not Found.Please enter a correct Room ID");
                     continue;
                 }
 
@@ -419,7 +429,7 @@ class HostelMate {
                 }
                 // If room is not found displaying a error and exit method
                 if (index == -1) {
-                    System.out.println("\tRoom not Found.Please enter a correct RoomId");
+                    System.out.println("\tRoom not Found.Please enter a correct Room ID");
                     continue;
                 }
 
@@ -559,7 +569,7 @@ class HostelMate {
                         if (manageChoice >= 1 && manageChoice <= 6)
                             break;
                         else
-                            System.out.println("Invalid choice. Entera number between(1-6)");
+                            System.out.println("Invalid choice. Enter a number between(1-6)");
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid input. Enter a number between (1-6)");
                     }
@@ -572,10 +582,18 @@ class HostelMate {
                         System.out.println("\nAdd Student\n");
 
                         System.out.print("\tStudent ID : ");
-                        studentId = input.next();
-                        input.nextLine();
+                        studentId = input.nextLine();
 
                         // Validating studentId
+                        if (studentId.isEmpty()) {
+                            System.out.println("\tStudent Id cannot be empty.Please enter a valid Student ID.");
+                            continue;
+                        }
+
+                        if (!studentId.matches("S\\d+")) {
+                            System.out.println("\tInvalid student ID .Student  ID must start with S (eg:S002).");
+                            continue;
+                        }
                         // Each row represent a student record
                         // Condition checks until the NoStudents rather than the MaxStudents
                         boolean dup = false;
@@ -593,6 +611,11 @@ class HostelMate {
                         // Getting user input and validating
                         System.out.print("\n\tName       : ");
                         String studentName = input.nextLine();
+
+                        if (studentName.isEmpty()) {
+                            System.out.println("\tName cannot be empty.Please enter a valid name.");
+                            continue;
+                        }
 
                         System.out.print("\n\tContact    : ");
                         contactNo = input.next();
@@ -702,7 +725,7 @@ class HostelMate {
                         }
 
                         // If the student is active then cannot remove him
-                        if (students[index][4].equals("\tACTIVE")) {
+                        if (students[index][4].equals("ACTIVE")) {
                             System.out
                                     .println(
                                             "\tCannot Delete! Student have ACTIVE ALLOCATIONS.Marking as INACTIVE instead.");
@@ -742,7 +765,8 @@ class HostelMate {
                                 System.out.printf("%-20s %-20s %-20s %-30s %-20s\n", "ID", "Name", "Contact", "Email",
                                         "Status");
                                 System.out
-                                        .println("------------------------------------------------------------------------------------------------------\n");
+                                        .println(
+                                                "------------------------------------------------------------------------------------------------------\n");
 
                                 // 0 - 5, indexes of the inner array elements
                                 System.out.printf(
@@ -769,10 +793,11 @@ class HostelMate {
                     case 5:
                         // if choice is 5
                         // =====DISPLAY ALL STUDENTS=======
-                        System.out.println("\n\t\t\t\t\t\tAll Students");
+                        System.out.println("\n\t\t\t\t\t\tAll Students\n");
                         System.out.printf("%-20s %-20s %-20s %-30s %-20s\n", "ID", "Name", "Contact", "Email",
                                 "Status");
-                        System.out.println("------------------------------------------------------------------------------------------------------------\n");
+                        System.out.println(
+                                "------------------------------------------------------------------------------------------------------------\n");
 
                         for (int i = 0; i < NoStudents; i++) {
                             System.out.printf(
@@ -792,7 +817,7 @@ class HostelMate {
 
                     default:
                         // if the choice id invalid
-                        System.out.println("Invalid input. Please enter a choice(1-6)");
+                        System.out.println("Invalid input. Please enter a choice between (1-6)");
 
                 }
             }
@@ -812,9 +837,20 @@ class HostelMate {
 
         // input student id
         System.out.print("\tStudent ID : ");
-        String studentId = input.next();
-        input.nextLine();
+        String studentId = input.nextLine();
 
+        // Validating studentId
+        if (studentId.isEmpty()) {
+            System.out.println("\tStudent Id cannot be empty.Please enter a valid Student ID.");
+            return;
+
+        }
+
+        if (!studentId.matches("S\\d+")) {
+            System.out.println("\tInvalid student ID .Student  ID must start with S (eg:S002).");
+            return;
+
+        }
         // checking student exist
         int index = -1;
         for (int i = 0; i < NoStudents; i++) {
@@ -838,8 +874,17 @@ class HostelMate {
 
         // input room Id
         System.out.print("\n\tRoom ID : ");
-        String roomId = input.next();
-        input.nextLine();
+        String roomId = input.nextLine();
+
+        //validating room ID
+        if(roomId.isEmpty()){
+            System.out.println("\tRoom Id cannot be empty.Please enter a valid Room Number.");
+            return;
+
+        }else if (!roomId.matches("R\\d+")){
+            System.out.println("\tInvalid room ID.Please enter valid room ID(eg:R101).");
+            return;
+        } 
 
         // checking if the room exists
         int roomindex = -1;
@@ -935,13 +980,34 @@ class HostelMate {
 
         // input student id
         System.out.print("\tStudent ID : ");
-        String studentId = input.next();
-        input.nextLine();
+        String studentId = input.nextLine();
+
+        // Validating studentId
+        if (studentId.isEmpty()) {
+            System.out.println("\tStudent Id cannot be empty.Please enter a valid Student ID.");
+            return;
+
+        }
+
+        if (!studentId.matches("S\\d+")) {
+            System.out.println("\tInvalid student ID .Student  ID must start with S (eg:S002).");
+            return;
+
+        }
 
         // input room Id
         System.out.print("\tRoom ID : ");
-        String roomId = input.next();
-        input.nextLine();
+        String roomId = input.nextLine();
+
+        //validating room id
+        if(roomId.isEmpty()){
+            System.out.println("\tRoom Id cannot be empty.Please enter a valid Room Number.");
+            return;
+
+        }else if (!roomId.matches("R\\d+")){
+            System.out.println("\tInvalid room ID.Please enter valid room ID(eg:R101).");
+            return;
+        } 
 
         int roomindex = -1;
         for (int i = 0; i < NoRooms; i++) {
@@ -952,7 +1018,7 @@ class HostelMate {
         }
 
         if (roomindex == -1) {
-            System.out.println("\tRoom not Found.Please enter a correct RoomId");
+            System.out.println("\tRoom not Found.Please enter a correct Room ID");
             return;
         }
         // Check if this student is allocated to this room
@@ -1024,8 +1090,20 @@ class HostelMate {
 
         // input student id
         System.out.print("\tStudent ID : ");
-        String studentId = input.next();
-        input.nextLine();
+        String studentId = input.nextLine();
+
+        // Validating studentId
+        if (studentId.isEmpty()) {
+            System.out.println("\tStudent Id cannot be empty.Please enter a valid Student ID.");
+            return;
+
+        }
+
+        if (!studentId.matches("S\\d+")) {
+            System.out.println("\tInvalid student ID .Student  ID must start with S (eg:S002).");
+            return;
+
+        }
 
         // Check if this student is allocated to this room
         int allocateIndex = -1; // will store the row number if found
@@ -1064,8 +1142,17 @@ class HostelMate {
         System.out.println("\tFrom Room : " + oldRoomID);
 
         System.out.print("\tTo Room : ");
-        String newRoomId = input.next();
-        input.nextLine();
+        String newRoomId = input.nextLine();
+
+        //validatinf the room ID
+        if(newRoomId.isEmpty()){
+            System.out.println("\tRoom Id cannot be empty.Please enter a valid Room Number.");
+            return;
+
+        }else if (!newRoomId.matches("R\\d+")){
+            System.out.println("\tInvalid room ID.Please enter valid room ID(eg:R101).");
+            return;
+        } 
 
         int newRoomIndex = -1;
         for (int i = 0; i < NoRooms; i++) {
@@ -1090,7 +1177,7 @@ class HostelMate {
             NewCapacity = Integer.parseInt(rooms[newRoomIndex][3]);
 
         } catch (NumberFormatException e) {
-            System.out.println("Data error: invalid numeric value.");
+            System.out.println("\tData error: invalid numeric value.");
             return;
         }
         if (newAvaialble <= 0) {
@@ -1134,24 +1221,28 @@ class HostelMate {
         System.out.println("\n\tAvail (" + oldRoomID + "): " + rooms[oldRommIndex][5] + " | Avail (" + newRoomId + "): "
                 + rooms[newRoomIndex][5]);
         System.out.println("\tTransfer Date: " + transferDate); // optional print statement to display the transfer
-                                                                 // date
+                                                                // date
 
     }
 
     // =====VIEW REPORTS=========
     public static void ViewReports() {
 
-        //Occupancy Grid
+        // Occupancy Grid
         System.out.println("\nOccupancy Grid (rooms x beds)");
         System.out.println("\n\tRoom\tRow\tBeds ");
-        System.out.println("\t--------------------------------------------\n");
+        System.out.println("\t-------------------------------------------------------------------\n");
 
         for (int i = 0; i < NoRooms; i++) {
             if (rooms[i][3] == null)
                 continue;
             int cap = Integer.parseInt(rooms[i][3]);
             System.out.print(i + "\t [");
+
             for (int x = 0; x < cap; x++) {
+                if (occupancy[i][x] == null) {
+                    occupancy[i][x] = "EMPTY";
+                }
                 System.out.print(occupancy[i][x]);
                 if (x < cap - 1)
                     System.out.print(", ");
@@ -1163,7 +1254,7 @@ class HostelMate {
         // Vacant Beds by Floor
         System.out.println("\n\nVacant Beds by Floor");
         System.out.println("\n\tFloor\tTotalRooms\tTotalBeds\tOccupied\tVacant");
-        System.out.println("\t--------------------------------------------");
+        System.out.println("\t-------------------------------------------------------------------\n");
 
         // Find max floor number
         int maxiumunFloor = 0;
@@ -1199,7 +1290,7 @@ class HostelMate {
         // Students per Room
         System.out.println("\n\nStudents per Room ");
         System.out.println("\n\tRoom\tCount\tStudents");
-        System.out.println("\t--------------------------------");
+        System.out.println("\t-------------------------------------------------------------------\n");
 
         for (int i = 0; i < NoRooms; i++) {
             int capacity = Integer.parseInt(rooms[i][3]);
@@ -1221,7 +1312,7 @@ class HostelMate {
         // Overdue Dues
         System.out.println("\n\nOverdue Dues  ");
         System.out.println("\n\tStudent\tRoom\tDaysOverdue\tFee/Day\tEstimatedFine  ");
-        System.out.println("\t-------------------------------------------------------------------");
+        System.out.println("\t-------------------------------------------------------------------\n");
 
         for (int i = 0; i < NoAllocations; i++) {
 
@@ -1265,7 +1356,7 @@ class HostelMate {
             }
 
         }
-        System.out.printf("\n\t$ feePerDay for currently occupied beds = %.2f LKR", totalRevenue);
+        System.out.printf("\n\t$ feePerDay for currently occupied beds = %.2f LKR ", totalRevenue);
 
     }
 
@@ -1295,8 +1386,8 @@ class HostelMate {
             // Check whether the number has all digits
             for (int i = 0; i < contactNo.length(); i++) {
                 char digit = contactNo.charAt(i);
-                if (!Character.isDigit(digit)) {
-                    System.out.println("\tContact number should in digits!");
+                if (!Character.isDigit(digit) || contactNo.isEmpty()) {
+                    System.out.println("\tInvalid Contact number!");
                     validNumber = false;
                     break;
                 }
@@ -1335,6 +1426,10 @@ class HostelMate {
         if (!hasAt || !hasDot) {
             System.out.println("\tInvalid email address. Email must have @ and .\n");
             return true;
+        }else if (emailAddress.isEmpty()){
+            System.out.println("\tEmail cannot be empty.Please enter a valid email.");
+            return true;
+    
 
         }
 
