@@ -33,7 +33,9 @@ The system emphasizes structured data handling, rigorous validation, and robust 
 ## ▶️ Setup & Run
 
 Clone the repository:
+
         git clone https://github.com/Ama-Dombawela/HostelMate.git
+
 
 Navigate to the folder and run
 
